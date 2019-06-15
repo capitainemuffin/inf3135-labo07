@@ -15,10 +15,10 @@ clean :
 	rm -f data/*
 
 data :
-	curl https://www.github.com/guyfrancoeur/INF3135_E2019_TP/raw/master/crypto-data.zipp -L -O
+	curl https://www.github.com/guyfrancoeur/INF3135_E2019_TP/raw/master/crypto-data.zip -sLO -o crypto-data.zip
 	if [ ! -d "data" ]; then mkdir data; fi
 	mv crypto-data.zip data/
-	unzip data/crypto-data.zip
+	unzip data/crypto-data.zip -d data/
 
 
 
