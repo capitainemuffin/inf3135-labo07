@@ -2,12 +2,16 @@
 
    ## Description
 
-   <description du projet en quelques phrases>
-   <mentionner le contexte (cours, sigle, université, etc.)>
+   Le programme encode et décode des messages en utilisant une clé simple et un alphabet.
+
+   `Cours` : Construction et maintenance de logiciels
+   `Sigle` : inf3135
+   `Session` : Été 2019
+   `Université` : UQAM
 
    ## Auteur
 
-   <prénom et nom> (<code permanent>)
+   Sofiane Selaoui (SELS28049204)
 
    ## Fonctionnement
 
@@ -16,12 +20,32 @@
 
    ## Contenu du projet
 
-   <décrivez brièvement chacun des fichiers contenus dans le projet (une phrase
-   par fichier)>
+   `Makefile`
+   ```
+   Automatise la compilation, les tests et la gestion des fichiers.
+   ```
+
+   `cp.txt`
+   ```
+   Contient le code permanent.
+   ```
+
+   `data`
+   ```
+   Va contenir les fichiers obtenus avec la commande `make data`, pour les tests.
+   ```
+
+   `tp1.c`
+   ```
+   Contient le code source et la fonction main.
+   ```
 
    ## Références
 
-   <citez vos sources ici>
+   - [inf3135](https://github.com/guyfrancoeur/INF3135_E2019)
+   - [cplusplus](http://www.cplusplus.com/reference/clibrary)
+   - [tutorialspoint](https://www.tutorialspoint.com/cprogramming)
+   - [Markdown cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
    ## Statut
 

@@ -36,8 +36,14 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
 
             if (i + 1 < argc) {
                 arguments->code_perm = argv[i + 1];
-                i++;
+            } 
+
+            if(i + 1 >= argc || strlen(arguments->code_perm) != 12){
+                printf("%s\n", "Code permanent non conforme");
+                exit(2);
             }
+
+            i++;
 
         } else if (strcmp(argv[i], "-i") == 0) {
    
@@ -99,16 +105,21 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
         } else if (strcmp(argv[i], "-a") == 0) {
     
             if (i + 1 < argc) {
-                char *chemin = malloc(strlen(argv[i + 1]) + strlen("alphabet.txt") + 1);
-                strcpy(chemin, argv[i + 1]);
-                strcat(chemin, "alphabet.txt");
-                arguments->alphabet = fopen(chemin, "r");
-                i++;
-            }
 
-            if (arguments->alphabet == NULL) {
-                printf("%s\n", "-A mais erreur à l'ouverture de l'alphabet");
-                exit(8);
+                if(argv[i+1][strlen(argv[i+1])] != '/'){
+
+                    arguments->alphabet = fopen(argv[i+1], "r");
+
+                } else {
+
+                    char *chemin = malloc(strlen(argv[i + 1]) + strlen("alphabet.txt") + 1);
+                    strcpy(chemin, argv[i + 1]);
+                    strcat(chemin, "alphabet.txt");
+                    arguments->alphabet = fopen(chemin, "r");
+
+                }
+     
+                i++;
             }
 
         } else {
@@ -119,26 +130,17 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
     }
 
     if (arguments->code_perm == NULL) {
-        //pas de code permanent
         printf("Usage: %s <-c CODEpermanent> <-d | -e> <-k valeur> [-i fichier.in] [-o fichier.out] [-a chemin]\n",
                argv[0]);
         exit(1);
     }
 
-    if (strlen(arguments->code_perm) != 12) {
-        //code permanent trop court
-        printf("%s\n", "Code permanent non conforme");
-        exit(2);
-    }
-
     if (!arguments->mode.present) {
-        //pas d'indication encryption ou decryption
         printf("%s\n", "Pas d'indication encryption ou decryption");
         exit(4);
     }
 
     if (!arguments->cle.present) {
-        //clé non valide ou non fournie
         printf("%s\n", "Clé non valide ou non fournie");
         exit(7);
     }
@@ -167,7 +169,8 @@ int main(int argc, char **argv) {
     do {
 
         c = fgetc (arguments.entree);
-        //le modifier selon l'alphabet et la clé
+        //obtenir la position de c dans l'alphabet
+        //décaler dans l'alphabet selon la clé
         //l'écrire dans la sortie
 
     } while (c != EOF);
