@@ -105,8 +105,7 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
         } else if (strcmp(argv[i], "-a") == 0) {
     
             if (i + 1 < argc) {
-
-                if(argv[i+1][strlen(argv[i+1])] != '/'){
+                if( argv[i+1][strlen(argv[i+1]) -1] != '/' ){
 
                     arguments->alphabet = fopen(argv[i+1], "r");
 
@@ -116,6 +115,7 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
                     strcpy(chemin, argv[i + 1]);
                     strcat(chemin, "alphabet.txt");
                     arguments->alphabet = fopen(chemin, "r");
+                    free(chemin);
 
                 }
      
