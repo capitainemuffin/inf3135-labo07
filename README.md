@@ -33,39 +33,33 @@
    - `-o` suivi d'un fichier en sortie 
    - `-a` suivi d'un chemin vers un fichier `alphabet.txt`
 
+   Lorsque l'option `-e` (encrypter) est choisie, le programme décale la valeur de chaque caractère selon la clé donnée et les choix possibles dans l'alphabet.
+
+   Si le caractère n'est pas présent dans l'alphabet, le programme ne peut pas le modifier.
+
+   Si l'option `-d` (décrypter) est choisie, le décalage se fera dans le sens inverse. 
+
    ### Exemples
 
    Commande : 
 
-    ` `
-
-    Entrée :
-    ```
-
-    ```
+    `echo wow | ./tp1 -c SELS28049204 -e -k 1`
 
     Sortie : 
     ```
-
+    xpx
     ```
 
     Commande : 
 
-    ` `
-
-    Entrée :
-    ```
-
-    ```
+    `cat mystere.txt ; ./tp1 -c SELS28049204 -d -k -2 -i mystere.txt`
 
     Sortie : 
     ```
-
+    pmlyjbm
+    ronaldo
     ```
-
-   <expliquez brièvement comment faire fonctionner votre projet, en inscrivant
-   au moins deux exemples d'utilisation (commande lancée et résultat affiché)>
-
+    
    ## Contenu du projet
 
    `Makefile`

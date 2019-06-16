@@ -22,9 +22,9 @@ typedef struct {
     char *code_perm;
     Cle cle;
     Mode mode;
-    FILE* alphabet;
-    FILE* entree;
-    FILE* sortie;
+    FILE *alphabet;
+    FILE *entree;
+    FILE *sortie;
 
 } Arguments;
 
@@ -36,9 +36,9 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
 
             if (i + 1 < argc) {
                 arguments->code_perm = argv[i + 1];
-            } 
+            }
 
-            if(i + 1 >= argc || strlen(arguments->code_perm) != 12){
+            if (i + 1 >= argc || strlen(arguments->code_perm) != 12) {
                 printf("%s\n", "Code permanent non conforme");
                 exit(2);
             }
@@ -46,7 +46,7 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
             i++;
 
         } else if (strcmp(argv[i], "-i") == 0) {
-   
+
             if (i + 1 < argc) {
                 arguments->entree = fopen(argv[i + 1], "r");
             }
@@ -59,10 +59,10 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
             i++;
 
         } else if (strcmp(argv[i], "-o") == 0) {
-   
+
             if (i + 1 < argc) {
                 arguments->sortie = fopen(argv[i + 1], "w");
-            } 
+            }
 
             if (i + 1 >= argc || arguments->sortie == NULL) {
                 printf("%s\n", "Erreur à l'ouverture du fichier de sortie");
@@ -82,7 +82,7 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
             arguments->mode.action = ENCRYPT;
 
         } else if (strcmp(argv[i], "-k") == 0) {
-    
+
             if (i + 1 < argc) {
 
                 arguments->cle.present = true;
@@ -91,34 +91,34 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
                 bool negatif = false;
                 for (int j = 0; j < strlen(argv[i + 1]); j++) {
 
-                	if(ptr[j] == '-'){
+                    if (ptr[j] == '-') {
 
-                		if(negatif){
-                			arguments->cle.present = false;
-                			break;
-                		} else {
-                			negatif = true;
-                		}
+                        if (negatif) {
+                            arguments->cle.present = false;
+                            break;
+                        } else {
+                            negatif = true;
+                        }
 
-                	} else if (!isdigit(ptr[j])) {
+                    } else if (!isdigit(ptr[j])) {
                         arguments->cle.present = false;
                         break;
                     }
                 }
 
                 if (arguments->cle.present) {
-                    arguments->cle.cle = atoi(argv[i+1]);
+                    arguments->cle.cle = atoi(argv[i + 1]);
                 }
 
                 i++;
             }
 
         } else if (strcmp(argv[i], "-a") == 0) {
-    
+
             if (i + 1 < argc) {
 
-                if( argv[i+1][strlen(argv[i+1]) -1] != '/' ){
-                    arguments->alphabet = fopen(argv[i+1], "r");
+                if (argv[i + 1][strlen(argv[i + 1]) - 1] != '/') {
+                    arguments->alphabet = fopen(argv[i + 1], "r");
                 } else {
                     char *chemin = malloc(strlen(argv[i + 1]) + strlen("alphabet.txt") + 1);
                     strcpy(chemin, argv[i + 1]);
@@ -126,7 +126,7 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
                     arguments->alphabet = fopen(chemin, "r");
                     free(chemin);
                 }
-     
+
                 i++;
             }
 
@@ -172,52 +172,77 @@ int main(int argc, char **argv) {
 
     validation_args(argc, argv, &arguments);
 
-	if(arguments.mode.action == DECRYPT){
-		arguments.cle.cle = -(arguments.cle.cle);
-	}
+    // taille de l'alphabet
+    fseek(arguments.alphabet, -1, SEEK_END);
+    if (fgetc(arguments.alphabet) == '\n') {
+        fseek(arguments.alphabet, -2, SEEK_END);
+    } else {
+        fseek(arguments.alphabet, -1, SEEK_END);
+    }
+    int taille = ftell(arguments.alphabet);
 
-	// taille de l'alphabet
-	fseek(arguments.alphabet, 0, SEEK_END);
-	int taille = ftell(arguments.alphabet);
-	fseek(arguments.alphabet, 0, SEEK_SET);
+    if (arguments.mode.action == DECRYPT) {
+        arguments.cle.cle = -(arguments.cle.cle);
+    }
 
     char old;
     char new;
 
-    while ((old = fgetc(arguments.entree)) != EOF) {
+    while ((old = fgetc(arguments.entree)) != EOF && old != '\n') {
 
-    	char alphabet;
-    	bool trouve = false;
+        char alphabet;
+        bool trouve = false;
+        fseek(arguments.alphabet, 0, SEEK_SET);
 
-    	while((alphabet = fgetc(arguments.alphabet)) != EOF){
-    		if(alphabet == old) {
-    			trouve = true;
-    			fseek(arguments.alphabet, -1, SEEK_CUR);
-    			break;
-    		}
-    	}
+        while ((alphabet = fgetc(arguments.alphabet)) != EOF && alphabet != '\n') {
+            if (alphabet == old) {
+                trouve = true;
+                fseek(arguments.alphabet, -1, SEEK_CUR);
+                break;
+            }
+        }
 
-    	if(trouve){
+        if (trouve) {
+            int i = 0;
+            if (arguments.cle.cle < 0) {
+                while (i > arguments.cle.cle) {
+                    if (ftell(arguments.alphabet) == 0) {
+                        fseek(arguments.alphabet, -1, SEEK_END);
 
-    		//loop dans l'alphabet
-    		int decalage = taille % arguments.cle.cle;
-    		fseek(arguments.alphabet, decalage, SEEK_CUR);
-    		new = fgetc(arguments.alphabet);
+                        if (fgetc(arguments.alphabet) == '\n') {
+                            fseek(arguments.alphabet, -2, SEEK_CUR);
+                        }
 
-    	} else {
-    		new = old;
-    	}
+                    } else {
+                        fseek(arguments.alphabet, -1, SEEK_CUR);
+                    }
+                    i--;
+                }
+            } else {
+                while (i < arguments.cle.cle) {
+                    if (ftell(arguments.alphabet) == taille) {
+                        fseek(arguments.alphabet, 0, SEEK_SET);
+                        if (fgetc(arguments.alphabet) != '\n') {
+                            fseek(arguments.alphabet, -1, SEEK_CUR);
+                        }
+                    } else {
+                        fseek(arguments.alphabet, 1, SEEK_CUR);
+                    }
+                    i++;
+                }
+            }
 
-    	fseek(arguments.alphabet, 0, SEEK_SET);
-    	fprintf(arguments.sortie, "%c", new);
+            new = fgetc(arguments.alphabet);
 
-    } 
+        } else {
+            new = old;
+        }
 
-    if (!feof(arguments.entree)){
-    	printf("%s\n", "Erreur à l'ouverture du fichier d'entrée");
-    	exit(5);
+        fprintf(arguments.sortie, "%c", new);
+
     }
 
+    fprintf(arguments.sortie, "\n");
     fclose(arguments.entree);
     fclose(arguments.sortie);
 
