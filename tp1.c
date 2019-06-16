@@ -88,8 +88,19 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
                 arguments->cle.present = true;
 
                 char *ptr = argv[i + 1];
+                bool negatif = false;
                 for (int j = 0; j < strlen(argv[i + 1]); j++) {
-                    if (!isdigit(ptr[j])) {
+
+                	if(ptr[j] == '-'){
+
+                		if(negatif){
+                			arguments->cle.present = false;
+                			break;
+                		} else {
+                			negatif = true;
+                		}
+
+                	} else if (!isdigit(ptr[j])) {
                         arguments->cle.present = false;
                         break;
                     }
@@ -105,18 +116,15 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
         } else if (strcmp(argv[i], "-a") == 0) {
     
             if (i + 1 < argc) {
+
                 if( argv[i+1][strlen(argv[i+1]) -1] != '/' ){
-
                     arguments->alphabet = fopen(argv[i+1], "r");
-
                 } else {
-
                     char *chemin = malloc(strlen(argv[i + 1]) + strlen("alphabet.txt") + 1);
                     strcpy(chemin, argv[i + 1]);
                     strcat(chemin, "alphabet.txt");
                     arguments->alphabet = fopen(chemin, "r");
                     free(chemin);
-
                 }
      
                 i++;
@@ -164,16 +172,51 @@ int main(int argc, char **argv) {
 
     validation_args(argc, argv, &arguments);
 
-    //lire chaque caractère de l'entrée
-    char c;
-    do {
+	if(arguments.mode.action == DECRYPT){
+		arguments.cle.cle = -(arguments.cle.cle);
+	}
 
-        c = fgetc (arguments.entree);
-        //obtenir la position de c dans l'alphabet
-        //décaler dans l'alphabet selon la clé
-        //l'écrire dans la sortie
+	// taille de l'alphabet
+	fseek(arguments.alphabet, 0, SEEK_END);
+	int taille = ftell(arguments.alphabet);
+	fseek(arguments.alphabet, 0, SEEK_SET);
 
-    } while (c != EOF);
+    char old;
+    char new;
+
+    while ((old = fgetc(arguments.entree)) != EOF) {
+
+    	char alphabet;
+    	bool trouve = false;
+
+    	while((alphabet = fgetc(arguments.alphabet)) != EOF){
+    		if(alphabet == old) {
+    			trouve = true;
+    			fseek(arguments.alphabet, -1, SEEK_CUR);
+    			break;
+    		}
+    	}
+
+    	if(trouve){
+
+    		//loop dans l'alphabet
+    		int decalage = taille % arguments.cle.cle;
+    		fseek(arguments.alphabet, decalage, SEEK_CUR);
+    		new = fgetc(arguments.alphabet);
+
+    	} else {
+    		new = old;
+    	}
+
+    	fseek(arguments.alphabet, 0, SEEK_SET);
+    	fprintf(arguments.sortie, "%c", new);
+
+    } 
+
+    if (!feof(arguments.entree)){
+    	printf("%s\n", "Erreur à l'ouverture du fichier d'entrée");
+    	exit(5);
+    }
 
     fclose(arguments.entree);
     fclose(arguments.sortie);
