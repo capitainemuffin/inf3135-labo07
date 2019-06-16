@@ -43,23 +43,25 @@
 
    Commande : 
 
-    `echo wow | ./tp1 -c SELS28049204 -e -k 1`
+   `echo wow | ./tp1 -c SELS28049204 -e -k 1`
 
-    Sortie : 
-    ```
-    xpx
-    ```
+   Sortie : 
 
-    Commande : 
+   ```
+   xpx
+   ```
 
-    `cat mystere.txt ; ./tp1 -c SELS28049204 -d -k -2 -i mystere.txt`
+   Commande : 
 
-    Sortie : 
-    ```
-    pmlyjbm
-    ronaldo
-    ```
-    
+   `cat mystere.txt ; ./tp1 -c SELS28049204 -d -k -2 -i mystere.txt`
+
+   Sortie : 
+
+   ```
+   pmlyjbm
+   ronaldo
+   ```
+
    ## Contenu du projet
 
    `Makefile`
