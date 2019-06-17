@@ -38,11 +38,8 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
                 arguments->code_perm = argv[i + 1];
             }
 
-            if (i + 1 >= argc || strlen(arguments->code_perm) != 12) {
-                printf("%s\n", "Code permanent non conforme");
-                exit(2);
-            }
-
+            if (i + 1 >= argc || strlen(arguments->code_perm) != 12) exit(2);
+            
             i++;
 
         } else if (strcmp(argv[i], "-i") == 0) {
@@ -51,10 +48,8 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
                 arguments->entree = fopen(argv[i + 1], "r");
             }
 
-            if (i + 1 >= argc || arguments->entree == NULL) {
-                printf("%s\n", "Erreur à l'ouverture du fichier d'entrée");
-                exit(5);
-            }
+            if (i + 1 >= argc || arguments->entree == NULL) exit(5);
+            
 
             i++;
 
@@ -64,10 +59,8 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
                 arguments->sortie = fopen(argv[i + 1], "w");
             }
 
-            if (i + 1 >= argc || arguments->sortie == NULL) {
-                printf("%s\n", "Erreur à l'ouverture du fichier de sortie");
-                exit(6);
-            }
+            if (i + 1 >= argc || arguments->sortie == NULL) exit(6);
+            
 
             i++;
 
@@ -132,32 +125,20 @@ void validation_args(int argc, char *argv[], Arguments *arguments) {
 
         } else {
 
-            printf("%s (%s)\n", "Argument non permis", argv[i]);
             exit(3);
         }
     }
 
     if (arguments->code_perm == NULL) {
-        printf("Usage: %s <-c CODEpermanent> <-d | -e> <-k valeur> [-i fichier.in] [-o fichier.out] [-a chemin]\n",
+        fprintf(stderr, "Usage: %s <-c CODEpermanent> <-d | -e> <-k valeur> [-i fichier.in] [-o fichier.out] [-a chemin]\n",
                argv[0]);
         exit(1);
     }
 
-    if (!arguments->mode.present) {
-        printf("%s\n", "Pas d'indication encryption ou decryption");
-        exit(4);
-    }
-
-    if (!arguments->cle.present) {
-        printf("%s\n", "Clé non valide ou non fournie");
-        exit(7);
-    }
-
-    if (arguments->alphabet == NULL) {
-        printf("%s\n", "Erreur à l'ouverture de l'alphabet");
-        exit(8);
-    }
-
+    if (!arguments->mode.present) exit(4);
+    if (!arguments->cle.present) exit(7);
+    if (arguments->alphabet == NULL) exit(8);
+    
 }
 
 int main(int argc, char **argv) {
@@ -172,7 +153,6 @@ int main(int argc, char **argv) {
 
     validation_args(argc, argv, &arguments);
 
-    // taille de l'alphabet
     fseek(arguments.alphabet, -1, SEEK_END);
     if (fgetc(arguments.alphabet) == '\n') {
         fseek(arguments.alphabet, -2, SEEK_END);
