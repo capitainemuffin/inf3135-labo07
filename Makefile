@@ -1,9 +1,9 @@
 options=-Wall -pedantic -std=c11
 CP = $(shell cat cp.txt)
-entree = data/crypto-msg01.in
-sortie = data/crypto-msg01.out
-alphabet = data/crypto-msg01.alphabet
-cle = $(shell cat data/crypto-msg01.cle)
+IN = data/crypto-msg01.in
+OUT = data/crypto-msg01.out
+OUT_TEST = data/crypto-msg01.test
+CLE = $(shell cat data/crypto-msg01.cle)
 action = $(shell cat data/crypto-msg01.action)
 
 .PHONY : data clean default test resultat 
@@ -20,15 +20,9 @@ clean :
 	rm -fr *.o tp1 alphabet.txt data
 
 test : tp1
-	./tp1 -c $(CP) $(action) -k $(cle) -i $(entree) -o $(sortie) -a $(alphabet)
-
-test2 : tp1
-	./tp1 -d -k 2 -c $(CP) -i nom_du_fichier_en_entree.ext > fichier_sortie.ext
-	./tp1 -k 1 -e -c $(CP)
-	./tp1 -c $(CP) -d -k 3 -o fichier.out
-	./tp1 -c $(CP) -i nom_du_fichier_en_entree.ext -o fichier_sortie.ext -k 7 -e
-	./tp1 -c $(CP) -d -k 9 < nom_du_fichier_en_entree.ext > fichier_sortie.ext
-	./tp1 -c $(CP) -d -k -1 -a ./data/
+	cp data/crypto-msg01.alphabet data/alphabet.txt
+	./tp1 -c $(CP) $(action) -k $(CLE) -i $(IN) -o $(OUT_TEST) -a ./data/
+	diff $(OUT) $(OUT_TEST)
 
 data :
 	curl https://www.github.com/guyfrancoeur/INF3135_E2019_TP/raw/master/crypto-data.zip -sLO -o crypto-data.zip

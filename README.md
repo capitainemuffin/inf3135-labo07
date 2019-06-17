@@ -39,6 +39,21 @@
 
    Si l'option `-d` (décrypter) est choisie, le décalage se fera dans le sens inverse. 
 
+   ## Codes d'erreurs 
+   
+   Il n'y a pas de messages d'erreurs, seulement des codes d'erreurs : 
+
+   - `1` : il n'y a aucun d'argument ou l'argument -c n'est pas présent;
+   - `2` : l'argument -c est présent, mais le code n'est pas 12 de long;
+   - `3` : un argument non voulu est présent. Voici un exemple : -t BLA;
+   - `4` : l'argument -d ou -e n'est pas présent;
+   - `5` : une erreur (lecture, ouverture, présence ...) avec le fichier en entrée;
+   - `6` : une erreur (création, ...) avec le fichier en sortie; Attention Si le fichier existe il faut l'écraser;
+   - `7` : l'argument -k n'est pas présent, ou la valeur passée n'est pas conforme;
+   - `8` : l'argument -a est présent, mais impossible d'ouvrir le fichier alphabet.txt;
+
+   Référence : [guyfrancoeur/INF3135_E2019_TP](https://github.com/guyfrancoeur/INF3135_E2019_TP/blob/master/tp1.md)
+
    ### Exemples
 
    Commande : 
