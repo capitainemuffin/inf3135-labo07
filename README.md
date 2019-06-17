@@ -93,4 +93,4 @@
 
    ## Statut
 
-   <indiquez si le projet est complété ou s'il y a des bogues>
+   - Complété
