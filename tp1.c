@@ -225,6 +225,7 @@ int main(int argc, char **argv) {
     fprintf(arguments.sortie, "\n");
     fclose(arguments.entree);
     fclose(arguments.sortie);
+    fclose(arguments.alphabet);
 
     return 0;
 }
